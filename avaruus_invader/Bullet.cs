@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace avaruus_invader
 {
+    
     internal class Bullet
     {
         public TransformComponent transform;

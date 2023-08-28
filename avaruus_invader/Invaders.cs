@@ -135,6 +135,9 @@ namespace avaruus_invader
             Raylib.UnloadSound(enemydmg);
             Raylib.UnloadSound(playerdmg);
         }
+        /// <summary>
+        /// Aloitetaan peli alusta
+        /// </summary>
         void ResetGame()
         {
             float playerSpeed = 120;
@@ -279,7 +282,16 @@ namespace avaruus_invader
                 t.position.Y, c.size.X, c.size.Y);
             return r;
         }
-
+        /// <summary>
+        /// pitää pelaajan ja vastustajat kentän sisällä, käytetään myös tarkistamaan onko luoti kentän sisällä
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <param name="collision"></param>
+        /// <param name="left"></param>
+        /// <param name="top"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <returns>True jos kentän ulkopuolella</returns>
         bool KeepInsideArea(TransformComponent transform, CollisionComponent collision,
             int left, int top, int right, int bottom)
         {

@@ -28,7 +28,10 @@ namespace avaruus_invader
             lastShootTime = -shootInterval;
             active= true;
         }
-
+        /// <summary>
+        /// Kuuntelee näppäimistöä ja päivittää hahmoa
+        /// </summary>
+        /// <returns>True jos voi ja haluaa ampua.</returns>
         public bool Update()
         {
             mousePos=Raylib.GetMousePosition();
