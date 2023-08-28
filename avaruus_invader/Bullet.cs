@@ -12,20 +12,33 @@ namespace avaruus_invader
     {
         public TransformComponent transform;
         public CollisionComponent collision;
+        public bool active;
+        SpriteRenderer spriteRenderer;
 
-        public Bullet(Vector2 startPosition, Vector2 direction, float speed, int size)
+        public Bullet(Vector2 startPosition, Vector2 direction, float speed, int size, Texture image, Color color)
         {
             this.transform = new TransformComponent(startPosition, direction, speed);
             this.collision = new CollisionComponent(new Vector2(size, size));
+            spriteRenderer=new SpriteRenderer(image, color,transform,collision);
+            active= true;
         }
 
         public void Update()
         {
-            transform.position += transform.direction * transform.speed * Raylib.GetFrameTime();
+            if(active)
+            {
+                transform.position += transform.direction * transform.speed * Raylib.GetFrameTime();
+
+            }
         }
         public void Draw()
         {
-            Raylib.DrawRectangleV(transform.position, collision.size, Raylib.RED);
+            if(active)
+            {
+                Raylib.DrawRectangleV(transform.position, collision.size, Raylib.WHITE);
+                spriteRenderer.Draw();
+            }
+            
         }
     }
 }

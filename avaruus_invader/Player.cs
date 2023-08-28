@@ -13,31 +13,44 @@ namespace avaruus_invader
 
         public TransformComponent transform { get; private set; }
         public CollisionComponent collision;
-
+        SpriteRenderer spriteRenderer;
+        public bool active=false;
         double shootInterval = 0.3;
         double lastShootTime;
+        Vector2 mousePos;
 
-        public Player(Vector2 startPos, float speed, int size)
+        public Player(Vector2 startPos, float speed, int size,Texture image, Color color)
         {
+            
             transform = new TransformComponent(startPos, new Vector2(0, 0), speed);
             collision = new CollisionComponent(new Vector2(size, size));
-
+            spriteRenderer=new SpriteRenderer(image,color,transform,collision);
             lastShootTime = -shootInterval;
+            active= true;
         }
 
         public bool Update()
         {
+            mousePos=Raylib.GetMousePosition();
             float deltaTime = Raylib.GetFrameTime();
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_A))
+            if (mousePos.X < 300 && active == true&&mousePos.Y>150)
             {
                 transform.position.X -= transform.speed * deltaTime;
             }
-            else if (Raylib.IsKeyDown(KeyboardKey.KEY_D))
+            if (mousePos.X > 400 && active == true&& mousePos.Y > 150)
+            {
+                transform.position.X += transform.speed * deltaTime;
+            }
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_A)&&active==true)
+            {
+                transform.position.X -= transform.speed * deltaTime;
+            }
+            else if (Raylib.IsKeyDown(KeyboardKey.KEY_D)&&active==true)
             {
                 transform.position.X += transform.speed * deltaTime;
             }
 
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE))
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && active == true)
             {
                 double timeNow = Raylib.GetTime();
                 double timeSinceLastShot = timeNow - lastShootTime;
@@ -53,7 +66,12 @@ namespace avaruus_invader
 
         public void Draw()
         {
-            Raylib.DrawRectangleV(transform.position, collision.size, Raylib.SKYBLUE);
+            if (active)
+            {
+                Raylib.DrawRectangleV(transform.position, collision.size, Raylib.SKYBLUE);
+                spriteRenderer.Draw();
+
+            }
         }
     }
 }

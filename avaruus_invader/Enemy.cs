@@ -12,28 +12,44 @@ namespace avaruus_invader
         public TransformComponent transform;
         public CollisionComponent collision;
         public bool active;
+        SpriteRenderer spriteRenderer;
+        double shootInterval = 0.9;
+        double lastShootTime;
 
-        public Enemy(Vector2 startPosition, Vector2 direction, float speed, int size)
+        public Enemy(Vector2 startPosition, Vector2 direction, float speed, int size, Texture image)
         {
+            
             transform = new TransformComponent(startPosition, direction, speed);
             collision = new CollisionComponent(new Vector2(size, size));
+            spriteRenderer = new SpriteRenderer(image, Raylib.RED, transform, collision);
             active = true;
+            lastShootTime = -shootInterval;
         }
         internal void Draw()
         {
             if (active)
             {
                 Raylib.DrawRectangleV(transform.position, collision.size, Raylib.DARKBROWN);
+                spriteRenderer.Draw();
             }
         }
 
-        internal void Update()
+        public bool Update()
         {
             if (active)
             {
+
                 float deltaTime = Raylib.GetFrameTime();
                 transform.position += transform.direction * transform.speed * deltaTime;
+                double timeNow = Raylib.GetTime();
+                double timeSinceLastShot = timeNow - lastShootTime;
+                if (timeSinceLastShot >= shootInterval)
+                {
+                    lastShootTime = timeNow;
+                    return true;
+                }
             }
+            return false;
         }
     }
 }
