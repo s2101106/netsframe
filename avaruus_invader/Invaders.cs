@@ -23,11 +23,13 @@ namespace avaruus_invader
             Options,
             DevMenu
         }
-        public event EventHandler StartButtonPressedEvent;
         GameState state;
         int window_width = 640;
         int window_height = 420;
-
+        float score_float = 0.0f;
+        float move = 0.0f;
+        int move1=0;
+        static public bool moveMouse = false;
         Player player;
         List<Bullet> bullets;
         List<Bullet> enemyBullets;
@@ -134,15 +136,15 @@ namespace avaruus_invader
                         break;
                     case GameState.Pause:
                         Raylib.ClearBackground(Raylib.BLACK);
-                        PauseMenu();
+                        PauseMen();
                         break;
                     case GameState.Options:
                         Raylib.ClearBackground(Raylib.BLACK);
-                        OptionsMenu(); 
+                        OptionsMen(); 
                         break;
                     case GameState.DevMenu:
                         Raylib.ClearBackground(Raylib.BLACK);
-                        DevMenu();
+                        DevMen();
                         break;
                 }
 
@@ -193,6 +195,14 @@ namespace avaruus_invader
         }
         void UpdateGame()
         {
+            if (move1 == 1)
+            {
+                moveMouse = true;
+            }
+            if (move1 == 0)
+            {
+                moveMouse = false;
+            }
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
             {
                 state = GameState.Pause;
@@ -366,7 +376,7 @@ namespace avaruus_invader
         }
         void UpdateStart()
         {
-            MainMenu();
+            MainMen();
         }
         void UpdateScore()
         {
@@ -390,60 +400,81 @@ namespace avaruus_invader
 
             }
         }
-        void MainMenu()
+        void MainMen()
         {
-            
-            RayGui.GuiTextBox(new Rectangle(280,50,90,20),"Space Invaders",20,false);
-            RayGui.GuiTextBox(new Rectangle(280, 100, 200, 40), "Spacebar - ampuu \n A,D ja hiiri - liikkuu sivulta sivlle", 20, false);
-            if(RayGui.GuiButton(new Rectangle(280,150,60,20),"Aloita Peli"))
-            {
-                ResetGame();
-                state = GameState.Play;
-            }
-            if(RayGui.GuiButton(new Rectangle(280, 200, 60, 20), "Lopeta Peli"))
-            {
-                Raylib.EndDrawing();
-                Raylib.CloseWindow();
-            }
-            
+            MainMenu mainMenu=new MainMenu();
+            mainMenu.StartButtonPressedEvent += OnStartButtonPressed;
+            mainMenu.EndButtonPressedEvent += OnEndButtonPressed;
+            mainMenu.StartMain();
         }
-        void PauseMenu()
+        void OnStartButtonPressed(Object sender, EventArgs e)
         {
-            RayGui.GuiTextBox(new Rectangle(280, 50, 90, 20), "Space Invaders", 20, false);
-            RayGui.GuiTextBox(new Rectangle(280, 100, 200, 40), "Spacebar - ampuu \n A,D ja hiiri - liikkuu sivulta sivlle", 20, false);
-            if (RayGui.GuiButton(new Rectangle(280, 150, 60, 20), "Jatka peliä")||Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
-            {
-                state = GameState.Play;
-            }
-            if (RayGui.GuiButton(new Rectangle(280, 200, 70, 20), "Aloitusvalikko"))
-            {
-                state = GameState.Start;
-            }
-            if (RayGui.GuiButton(new Rectangle(280, 250, 70, 20), "Options"))
-            {
-                state = GameState.Options;
-            }
-
+            ResetGame();
+            state = GameState.Play;
         }
-        void OptionsMenu()
+        void OnEndButtonPressed(Object sender, EventArgs e)
         {
-            RayGui.GuiTextBox(new Rectangle(280, 50, 90, 20), "Options Menu", 20, false);
-            RayGui.GuiTextBox(new Rectangle(280, 100, 90, 20), "Vaikeustaso", 20, false);
-            RayGui.GuiButton(new Rectangle(240,120,60,20),"Easy");
-            RayGui.GuiButton(new Rectangle(280, 120, 60, 20), "Medium");
-            RayGui.GuiButton(new Rectangle(340, 120, 60, 20), "Hard");
+            Raylib.EndDrawing();
+            Raylib.CloseWindow();
+        }
+        void PauseMen()
+        {
+            PauseMenu pauseMenu= new PauseMenu();
+            pauseMenu.ResumeButtonPressedEvent += OnResumeButtonPressed;
+            pauseMenu.MainButtonPressedEvent += OnMainButtonPressed;
+            pauseMenu.OptionsButtonPressedEvent += OnOptionsButtonPressed;
+            pauseMenu.StartPause();
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
             {
                 state = GameState.Play;
             }
+
         }
-        void DevMenu()
+        void OnResumeButtonPressed(Object sender, EventArgs e)
         {
-            if (RayGui.GuiButton(new Rectangle(280, 250, 70, 20), "Reset game"))
+            state = GameState.Play;
+        }
+        void OnMainButtonPressed(Object sender, EventArgs e)
+        {
+            state = GameState.Start;
+        }
+        void OnOptionsButtonPressed(Object sender, EventArgs e)
+        {
+            state = GameState.Options;
+        }
+        void OnResetButtonPressed(Object sender, EventArgs e)
+        {
+            ResetGame();
+            state= GameState.Play;
+        }
+        void OnDeactivateButtonPressed(Object sender, EventArgs e)
+        {
+            foreach (Enemy enemy in enemies)
             {
-                ResetGame();
-                state = GameState.Play;
+                enemy.active = false;
             }
+            state = GameState.Play;
+        }
+
+        void OptionsMen()
+        {
+            OptionsMenu optionsMenu= new OptionsMenu();
+            move = RayGui.GuiSlider(new Rectangle(280, 170, 70, 20), "0", "1", move, 0f, 1f);
+            move1 = Convert.ToInt32(move);
+            optionsMenu.StartOptions();
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+            {
+                state = GameState.Pause;
+            }
+        }
+        void DevMen()
+        {
+            DevMenu devMenu= new DevMenu();
+            devMenu.ResetButtonPressedEvent += OnResetButtonPressed;
+            devMenu.DeactivateButtonPressedEvent += OnDeactivateButtonPressed;
+            score_float =RayGui.GuiSlider(new Rectangle(280, 370, 70, 20), "0","20",score_float,0f,20f);
+            score = Convert.ToInt32(score_float);
+            devMenu.StartDev();
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
             {
                 state = GameState.Play;

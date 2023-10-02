@@ -36,19 +36,19 @@ namespace avaruus_invader
         {
             mousePos=Raylib.GetMousePosition();
             float deltaTime = Raylib.GetFrameTime();
-            if (mousePos.X < 300 && active == true&&mousePos.Y>150)
+            if (mousePos.X < 300 && active == true&&mousePos.Y>150&&Invaders.moveMouse==true)
             {
                 transform.position.X -= transform.speed * deltaTime;
             }
-            if (mousePos.X > 400 && active == true&& mousePos.Y > 150)
+            if (mousePos.X > 400 && active == true&& mousePos.Y > 150&&Invaders.moveMouse==true)
             {
                 transform.position.X += transform.speed * deltaTime;
             }
-            if (Raylib.IsKeyDown(KeyboardKey.KEY_A)&&active==true)
+            if (Raylib.IsKeyDown(KeyboardKey.KEY_A)&&active==true&&Invaders.moveMouse==false)
             {
                 transform.position.X -= transform.speed * deltaTime;
             }
-            else if (Raylib.IsKeyDown(KeyboardKey.KEY_D)&&active==true)
+            else if (Raylib.IsKeyDown(KeyboardKey.KEY_D)&&active==true&&Invaders.moveMouse==false)
             {
                 transform.position.X += transform.speed * deltaTime;
             }
