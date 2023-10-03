@@ -11,6 +11,8 @@ namespace avaruus_invader
         public event EventHandler ResumeButtonPressedEvent;
         public event EventHandler MainButtonPressedEvent;
         public event EventHandler OptionsButtonPressedEvent;
+        public event EventHandler RestartButtonPressedEvent;
+        
         public void StartPause()
         {
             MenuCreator menucreator1 = new MenuCreator(280, 50, 50, 200);
@@ -28,6 +30,10 @@ namespace avaruus_invader
             if (menucreator1.Button("Options"))
             {
                 OptionsButtonPressedEvent.Invoke(this, EventArgs.Empty);
+            }
+            if(menucreator1.Button("Aloita alusta"))
+            {
+                RestartButtonPressedEvent.Invoke(this, EventArgs.Empty);
             }
         }
     }

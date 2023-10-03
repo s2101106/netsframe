@@ -28,6 +28,8 @@ namespace avaruus_invader
         int window_height = 420;
         float score_float = 0.0f;
         float move = 0.0f;
+        public double doubleTime = 0.0f;
+        public int Time = 0;
         int move1=0;
         static public bool moveMouse = false;
         Player player;
@@ -48,6 +50,7 @@ namespace avaruus_invader
         int spaceBetween = 40;
 
         int finalscore = 0;
+        public int enemiesShot { get; set; }
         //Texture playerImage;
         //List<Texture> enemyImages;
         Texture bulletImage;
@@ -195,6 +198,7 @@ namespace avaruus_invader
         }
         void UpdateGame()
         {
+            doubleTime = Raylib.GetTime();
             if (move1 == 1)
             {
                 moveMouse = true;
@@ -301,6 +305,7 @@ namespace avaruus_invader
                         {
                             score += 1;
                             enemiesAlive -= 1;
+                            enemiesShot++;
                             enemy.active = false;
                             bullet.transform.position.Y = 500.0f;
                             bullet.active = false;
@@ -419,10 +424,16 @@ namespace avaruus_invader
         }
         void PauseMen()
         {
+            Time = Convert.ToInt32(doubleTime);
             PauseMenu pauseMenu= new PauseMenu();
+            RayGui.GuiTextBox(new Rectangle(100, 200, 110, 20),
+                "Vihollisia tuhottu:"+enemiesShot.ToString(), 20, false);
+            RayGui.GuiTextBox(new Rectangle(100, 220, 110, 20),
+                "Pelattu aika:" + Time.ToString()+"s", 20, false);
             pauseMenu.ResumeButtonPressedEvent += OnResumeButtonPressed;
             pauseMenu.MainButtonPressedEvent += OnMainButtonPressed;
             pauseMenu.OptionsButtonPressedEvent += OnOptionsButtonPressed;
+            pauseMenu.RestartButtonPressedEvent += OnResetButtonPressed;
             pauseMenu.StartPause();
             if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
             {
